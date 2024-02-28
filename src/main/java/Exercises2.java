@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Exercises2 {
 
@@ -14,7 +11,12 @@ public class Exercises2 {
     */
 
     public int[] twoSum(int[] nums, int target) {
-        // TODO
+        for(int i = 0; i < nums.length; i++){
+            for(int j = i+1; j < nums.length; j++){
+                if(nums[i] + nums[j] == target) return new int[]{i, j};
+            }
+        }
+
         return null;
     }
 
@@ -49,8 +51,39 @@ public class Exercises2 {
     */
 
     public int romanToInt(String s) {
-        // TODO
-        return 0;
+        int sum = 0;
+
+        for (int i = 0; i < s.length()-1; i++) {
+            int letterValue = romanLetterToInt(s.charAt(i));
+            if(letterValue >= romanLetterToInt(s.charAt(i+1)))
+                sum += letterValue;
+            else
+                sum -= letterValue;
+        }
+        sum += romanLetterToInt(s.charAt(s.length()-1));
+        return sum;
+    }
+
+    private int romanLetterToInt(char c){
+        c = Character.toLowerCase(c);
+        switch (c){
+            case 'i':
+                return 1;
+            case 'v':
+                return 5;
+            case 'x':
+                return 10;
+            case 'l':
+                return 50;
+            case 'c':
+                return 100;
+            case 'd':
+                return 500;
+            case 'm':
+                return 1000;
+            default:
+                return 0;
+        }
     }
 
     /*
@@ -59,11 +92,43 @@ public class Exercises2 {
     */
 
     public List<List<Integer>> permute(int[] nums) {
-        // TODO
-        return null;
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        permuteRecur(nums, new ArrayList<>(), new boolean[nums.length], result);
+
+        return result;
+    }
+
+    private void permuteRecur(int[] nums, List<Integer> curr, boolean[] used, List<List<Integer>> result){
+        if(curr.size() == nums.length){
+            result.add(new ArrayList<>(curr));
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+//  Avoiding Duplicate nums And repeated permutes(nums is sorted).
+            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])) {
+                continue; // Skip duplicates
+            }
+            used[i] = true;
+            curr.add(nums[i]);
+            permuteRecur(nums, curr, used, result);
+            curr.remove(curr.size() - 1);
+            used[i] = false;
+        }
+
     }
 
     public static void main(String[] args) {
-        // test your code here!
+        Exercises2 ex = new Exercises2();
+
+// Test 1
+//         System.out.print(Arrays.toString(ex.twoSum(new int[]{1, 2, 4, 5, 6, 7}, 13)));
+
+// Test 2
+//        System.out.print(ex.romanToInt("Xl"));
+
+//  Test 3
+//        System.out.print(ex.permute(new int[]{1, 5, 5}));
     }
 }
